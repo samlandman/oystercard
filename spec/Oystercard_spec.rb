@@ -100,8 +100,18 @@ describe Oystercard do
   
   end
   describe '#journeys' do
+  let(:station) { double "station" }
     it 'subject responds to' do
       expect(subject).to respond_to(:journeys)
+    end
+    it 'has zero journeys on initialize' do
+      expect(subject.journeys.count).to eq(0)
+    end
+    it 'has one journey when touch_in and touch_out complete' do
+      oyster.top_up(5)
+      oyster.touch_in(station)
+      oyster.touch_out(station)
+      expect(oyster.journeys.count).to eq(1)
     end
   end
 
@@ -123,5 +133,7 @@ describe Oystercard do
       expect(oyster.exit_station).to eq(station)
     end
   end
+
+
 
 end
