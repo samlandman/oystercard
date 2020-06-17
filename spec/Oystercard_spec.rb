@@ -28,9 +28,10 @@ describe Oystercard do
   end
 
   describe '#deduct' do
+  let(:station) {double "station"}
     it 'deducts money from the card' do
       oyster.top_up(20)
-      expect {oyster.touch_out}.to change { oyster.balance }. by -1
+      expect {oyster.touch_out(station)}.to change { oyster.balance }. by -1
     end 
   end
 
@@ -49,7 +50,7 @@ describe Oystercard do
     it 'traveller touches out' do
       oyster.top_up(5)
       oyster.touch_in(station)
-      oyster.touch_out
+      oyster.touch_out(station)
       expect(oyster).not_to be_in_journey
     end
   end
@@ -68,7 +69,7 @@ describe Oystercard do
       oyster.top_up(5)
       oyster.touch_in(station)
       # oyster.touch_out
-      expect { oyster.touch_out }.to change { oyster.balance }.by (-Oystercard::MIN_CHARGE)
+      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Oystercard::MIN_CHARGE)
     end
   end
 
@@ -93,10 +94,34 @@ describe Oystercard do
     it 'sets entry station to Nil upon touch out' do
        oyster.top_up(5)
        oyster.touch_in(station)
-       oyster.touch_out
+       oyster.touch_out(station)
        expect(oyster.entry_station).to eq(nil)
     end
+  
+  end
+  describe '#journeys' do
+    it 'subject responds to' do
+      expect(subject).to respond_to(:journeys)
+    end
+  end
 
+  describe '#touch_out' do
+    it 'responds to one argument' do
+      expect(subject).to respond_to(:touch_out).with(1).argument
+    end
+  end 
+
+  describe '#exit_station' do
+  let(:station) {double "station"}
+    it 'responds to exit station' do
+      expect(subject.exit_station).to eq(nil)
+    end
+    it 'gives an output to exit_station when touch_out' do
+      oyster.top_up(5)
+      oyster.touch_in(station)
+      oyster.touch_out(station)
+      expect(oyster.exit_station).to eq(station)
+    end
   end
 
 end
