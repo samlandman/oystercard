@@ -31,6 +31,7 @@ describe Oystercard do
   let(:station) {double "station"}
     it 'deducts money from the card' do
       oyster.top_up(20)
+      oyster.touch_in(station)
       expect {oyster.touch_out(station)}.to change { oyster.balance }. by -1
     end 
   end
@@ -69,7 +70,7 @@ describe Oystercard do
       oyster.top_up(5)
       oyster.touch_in(station)
       # oyster.touch_out
-      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Oystercard::MIN_CHARGE)
+      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Oystercard::MINIMUM)
     end
   end
 
@@ -79,26 +80,6 @@ describe Oystercard do
     end
   end
 
-  describe '#entry_station' do
-    let(:station) {double "station"}
-    it 'responds to entry station' do
-      expect(oyster).to respond_to(:entry_station) 
-    end
-
-    it 'stores the name store the name of station upon touch in' do
-      oyster.top_up(5)
-      oyster.touch_in(station)
-      expect(oyster.entry_station).to eq(station)
-    end
-   
-    it 'sets entry station to Nil upon touch out' do
-       oyster.top_up(5)
-       oyster.touch_in(station)
-       oyster.touch_out(station)
-       expect(oyster.entry_station).to eq(nil)
-    end
-  
-  end
   describe '#journeys' do
   let(:station) { double "station" }
     it 'subject responds to' do
@@ -113,6 +94,17 @@ describe Oystercard do
       oyster.touch_out(station)
       expect(oyster.journeys.count).to eq(1)
     end
+    it 'stores the name store the name of station upon touch in' do
+      oyster.top_up(5)
+      oyster.touch_in(station)
+      expect(oyster.journeys.last[:entry_station]).to eq(station)
+    end
+    it 'exit_station recorded in journeys on touch_out' do
+      oyster.top_up(5)
+      oyster.touch_in(station)
+      oyster.touch_out(station)
+      expect(oyster.journeys[0][:exit_station]).to eq(station)
+    end
   end
 
   describe '#touch_out' do
@@ -120,20 +112,4 @@ describe Oystercard do
       expect(subject).to respond_to(:touch_out).with(1).argument
     end
   end 
-
-  describe '#exit_station' do
-  let(:station) {double "station"}
-    it 'responds to exit station' do
-      expect(subject.exit_station).to eq(nil)
-    end
-    it 'gives an output to exit_station when touch_out' do
-      oyster.top_up(5)
-      oyster.touch_in(station)
-      oyster.touch_out(station)
-      expect(oyster.exit_station).to eq(station)
-    end
-  end
-
-
-
 end
