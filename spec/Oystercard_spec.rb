@@ -97,13 +97,13 @@ describe Oystercard do
     it 'stores the name store the name of station upon touch in' do
       oyster.top_up(5)
       oyster.touch_in(station)
-      expect(oyster.journeys.last[:entry_station]).to eq(station)
+      expect(oyster.journeys.last.entry_station).to eq(station)
     end
     it 'exit_station recorded in journeys on touch_out' do
       oyster.top_up(5)
       oyster.touch_in(station)
       oyster.touch_out(station)
-      expect(oyster.journeys[0][:exit_station]).to eq(station)
+      expect(oyster.journeys.last.exit_station).to eq(station)
     end
   end
 
