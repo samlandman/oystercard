@@ -59,24 +59,39 @@ describe Oystercard do
   describe '#touch in without enough funds' do 
     let(:station) { double "station" }
     it 'it raises an error if not enought money in oyster' do
-      min = Oystercard::MINIMUM
-      expect{ subject.touch_in(station) }.to raise_error "Not enough funds available. Min fund is #{min}."
+      expect{ subject.touch_in(station) }.to raise_error "Not enough funds available. Min fund is #{Journey::MINIMUM_FARE}."
     end
   end 
 
   describe 'charge on touch out' do
     let(:station) { double "station" }
-    it 'deduct min fare after touched out' do
+    it 'deduct min fare after touched out for correct journey' do
       oyster.top_up(5)
       oyster.touch_in(station)
-      # oyster.touch_out
-      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Oystercard::MINIMUM)
+      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Journey::MINIMUM_FARE)
+    end
+    it 'deduct penalty fare after touch in twice' do
+      oyster.top_up(10)
+      oyster.touch_in(station)
+      expect { oyster.touch_in(station) }.to change { oyster.balance }.by (-Journey::PENALTY_FARE)
+    end
+    it 'deduct penalty fare after touch out twice' do
+      oyster.top_up(10)
+      oyster.touch_in(station)
+      oyster.touch_out(station)  
+      expect { oyster.touch_out(station) }.to change { oyster.balance }.by (-Journey::PENALTY_FARE)
     end
   end
 
   describe '#touch-in' do
     it 'oyster.touch_in(station) to accept 1 arguement' do
       expect(subject).to respond_to(:touch_in).with(1).argument
+    end
+    it 'creates a new journey if already in a journey' do
+      oyster.top_up(5)
+      oyster.touch_in("test_station_1")
+      oyster.touch_in("test_station_2")
+      expect(oyster.journeys.count).to eq(2)
     end
   end
 

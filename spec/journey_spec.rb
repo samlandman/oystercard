@@ -42,11 +42,9 @@ describe Journey do
     end
     it 'returns a penalty fare if not in_journey? and end_journey called' do
     journey.end_journey(station)
-    journey.end_journey(station)
     expect(journey.fare).to eq(6)
     end
   end
-  
   
 end
 
