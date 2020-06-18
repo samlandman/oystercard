@@ -85,14 +85,14 @@ describe Oystercard do
     it 'subject responds to' do
       expect(subject).to respond_to(:journeys)
     end
-    it 'has zero journeys on initialize' do
-      expect(subject.journeys.count).to eq(0)
+    it 'has one blank journey on initialize' do
+      expect(subject.journeys.count).to eq(1)
     end
-    it 'has one journey when touch_in and touch_out complete' do
+    it 'has one journey and one blank journey when touch_in and touch_out complete' do
       oyster.top_up(5)
       oyster.touch_in(station)
       oyster.touch_out(station)
-      expect(oyster.journeys.count).to eq(1)
+      expect(oyster.journeys.count).to eq(2)
     end
     it 'stores the name store the name of station upon touch in' do
       oyster.top_up(5)
@@ -103,7 +103,7 @@ describe Oystercard do
       oyster.top_up(5)
       oyster.touch_in(station)
       oyster.touch_out(station)
-      expect(oyster.journeys.last.exit_station).to eq(station)
+      expect(oyster.journeys[-2].exit_station).to eq(station)
     end
   end
 

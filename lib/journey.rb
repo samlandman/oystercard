@@ -1,7 +1,9 @@
+
+
 class Journey
   attr_reader :entry_station, :exit_station
-  
-  def initialize(station)
+
+  def start_journey(station)
     @entry_station = station
   end
 
@@ -10,7 +12,11 @@ class Journey
   end
   
   def in_journey?
-    !@exit_station
+    !@exit_station && !!@entry_station
+  end
+
+  def fare
+    (!!@exit_station && !!@entry_station) ? 1 : 6
   end
   
 end

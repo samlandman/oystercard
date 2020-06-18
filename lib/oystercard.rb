@@ -12,7 +12,7 @@ class Oystercard
     @balance = 0
     @limit = limit
     @min = min 
-    @journeys = []
+    @journeys = [Journey.new]
   end
 
   def top_up(value)
@@ -30,12 +30,13 @@ class Oystercard
 
   def touch_in(station)
     fail "Not enough funds available. Min fund is #{@min}." if @balance < MINIMUM
-    @journeys << Journey.new(station)
+    @journeys.last.start_journey(station)
   end
 
   def touch_out(station)
      deduct(MINIMUM)
      @journeys.last.end_journey(station)
+     @journeys << Journey.new
   end
 
   private
