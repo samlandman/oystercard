@@ -2,7 +2,8 @@ require 'journeylog'
 
 describe Journeylog do
   let (:station) { Station.new("London Bridge", 1) }
-  #let (:journey) { Journey.new }
+  let (:station2) { Station.new("Westminster", 1) }
+  let (:journeylog) { Journeylog.new }
   
   describe '#initialize' do
     it "subject is an instance of Journeylog class" do
@@ -15,9 +16,9 @@ describe Journeylog do
   
   describe '#return_journeys' do
     it 'returns the list of journeys' do
-      subject.journeys.last.start_journey(station)
-      subject.journeys.last.end_journey(station)
-      expect(subject.return_journeys).to eq('[#<Journey:0x00000000012ca078 @entry_station=#<Station:0x00000000012c9f38 @name="London Bridge", @zone=1>, @exit_station=#<Station:0x00000000012c9f38 @name="London Bridge", @zone=1>>]')
+      journeylog.journeys.last.start_journey(station)
+      journeylog.journeys.last.end_journey(station2)
+      expect(journeylog.return_journeys).to eq("London Bridge to Westminster")
     end
   end
   
